@@ -4,6 +4,7 @@ const order = {
     clientId: { type: String, required: true },
     orderDate: { type: Date, required: true },
     productId: { type: String, required: true },
+    platform: { type: String, required: true, enum: ["canvas", "print", "T-shirt"] },
     style: [{
         textColor: { type: String, default: 'black' },
         backgorundColor: { type: String, default: 'white' },
