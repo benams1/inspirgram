@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const authMiddleware = require('./middlewares/authMiddleware');
 
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
@@ -13,13 +14,9 @@ app.use(
         next();
     });
 
-app.use('/app',(req,res,next) =>{
-   //TODO add auth
-    //all the private routes should start with app
-    next();
-});
+app.use(authMiddleware);
 
-    //here all the other routes
+    //here all the other routers and routs
 
 
 app.all('*',(req,res)=>{

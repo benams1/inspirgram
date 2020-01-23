@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const consts = require('./consts');
 const  { DB_URL } = consts;
 const url = DB_URL;
-console.log(url);
 const options = {
     useNewUrlParser: true, // For deprecation warnings
     useCreateIndex: true, // For deprecation warnings
