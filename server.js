@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const authMiddleware = require('./middlewares/authMiddleware');
+const { SentenceRouter } =require('./routers/');
 
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
@@ -18,6 +19,7 @@ app.use(authMiddleware);
 
     //here all the other routers and routs
 
+app.use('/sentence',SentenceRouter);
 
 app.all('*',(req,res)=>{
     res.status(404).json({message: 'not found'})
