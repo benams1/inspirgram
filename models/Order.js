@@ -1,15 +1,17 @@
 const mongoose = require('mongoose');
 const order = {
-    sentenceId: { type: String, required: true },
-    clientId: { type: String, required: true },
-    orderDate: { type: Date, required: true },
-    productId: { type: String, required: true },
-    platform: { type: String, required: true, enum: ["canvas", "print", "T-shirt"] },
-    style: [{
+    orderId: { type: Number, required: true },
+    sentenceId: { type: Number, required: true },
+    clientId: { type: Number, required: true },
+    orderDate: { type: Date, required: true, default: Date.now },
+    updatedAt: { type: Date, required: true, default: Date.now },
+    platform: { type: String, required: true, enum: ["canvas", "photo", "t-shirt"] },
+    style: {
         textColor: { type: String, default: 'black' },
-        backgorundColor: { type: String, default: 'white' },
-        fomtFamily: { type: String, default: 'Comic Sans MS", cursive, sans-serif' },
-    }],
+        backgroundColor: { type: String, default: 'white' },
+        fontFamily: { type: String, default: '"Comic Sans MS", cursive, sans-serif' },
+    },
+    isActive: {type: Boolean , default: true},
 };
 
 const orderSchema = mongoose.Schema(order);

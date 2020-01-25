@@ -11,7 +11,7 @@ const sentence = {
     style: {
         textColor: { type: String, default: 'black' },
         backgroundColor: { type: String, default: 'white' },
-        fontFamily: { type: String, default: 'Comic Sans MS, cursive, sans-serif' },
+        fontFamily: { type: String, default: '"Comic Sans MS, cursive, sans-serif' },
     }
 };
 

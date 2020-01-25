@@ -15,6 +15,10 @@ const genericResponses = {
         code: 400,
         json:{ status: 0, message:`all API parameters must be set`},
     },
+    WRONG_PARAMS:{
+        code: 400,
+        json:{ status: 0, message:`incorrect API parameters sent`},
+    },
     SAVED_SUCCESSFULLY:{
         code: 200,
         json: { status: 1, message: `saved successfully` },
@@ -76,6 +80,7 @@ const sentencesResponses = {
     DB_ERROR: genericResponses.DB_ERROR,
     FORBIDDEN: genericResponses.FORBIDDEN,
     MISSING_PARAMS: genericResponses.MISSING_PARAMS,
+    WRONG_PARAMS: genericResponses.WRONG_PARAMS,
     ERROR_OCCURRED: genericResponses.ERROR_OCCURRED,
 };
 

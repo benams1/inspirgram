@@ -1,4 +1,6 @@
-const SentenceRouter = require('./SentencesRouter');
+const OrdersRouter = require('./OrdersRouter')
+const SentencesRouter = require('./SentencesRouter')
+const UsersRouter = require('./UsersRouter')
 
 
-module.exports = {SentenceRouter};
+module.exports = {OrdersRouter, SentencesRouter, UsersRouter};
