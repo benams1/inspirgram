@@ -85,3 +85,77 @@ const sentencesResponses = {
 };
 
 exports.sentencesResponses = sentencesResponses;
+
+const ordersResponses = {
+    NOT_FOUND:{
+        code: 404,
+        json:{
+            status: 0,
+            message:'not found',
+        }
+    },
+    ADD:{
+        SAVED_SUCCESSFULLY:genericResponses.SAVED_SUCCESSFULLY,
+        FAILURE: {
+            code: 502,
+            json:{
+                status: 0,
+                message:'there was error to establish your order',
+            },
+        },
+    },
+    GET:{
+        SUCCESS: genericResponses.GET_SUCCESS,
+    },
+    UPDATE: {
+        SUCCESS: genericResponses.UPDATED,
+        FAILURE: genericResponses.ERROR_OCCURRED,
+    },
+    DELETE:{
+        SUCCESS: genericResponses.GENERAL_SUCCESS,
+    },
+    DB_ERROR: genericResponses.DB_ERROR,
+    FORBIDDEN: genericResponses.FORBIDDEN,
+    MISSING_PARAMS: genericResponses.MISSING_PARAMS,
+    WRONG_PARAMS: genericResponses.WRONG_PARAMS,
+    ERROR_OCCURRED: genericResponses.ERROR_OCCURRED,
+};
+
+exports.ordersResponses = ordersResponses;
+
+const usersResponses = {
+    NOT_FOUND:{
+        code: 404,
+        json:{
+            status: 0,
+            message:'not found',
+        }
+    },
+    ADD:{
+        SAVED_SUCCESSFULLY:genericResponses.SAVED_SUCCESSFULLY,
+        FAILURE: {
+            code: 502,
+            json:{
+                status: 0,
+                message:'there was error to save users credentials',
+            },
+        },
+    },
+    GET:{
+        SUCCESS: genericResponses.GET_SUCCESS,
+    },
+    UPDATE: {
+        SUCCESS: genericResponses.UPDATED,
+        FAILURE: genericResponses.ERROR_OCCURRED,
+    },
+    DELETE:{
+        SUCCESS: genericResponses.GENERAL_SUCCESS,
+    },
+    DB_ERROR: genericResponses.DB_ERROR,
+    FORBIDDEN: genericResponses.FORBIDDEN,
+    MISSING_PARAMS: genericResponses.MISSING_PARAMS,
+    WRONG_PARAMS: genericResponses.WRONG_PARAMS,
+    ERROR_OCCURRED: genericResponses.ERROR_OCCURRED,
+};
+
+exports.usersResponses = usersResponses;

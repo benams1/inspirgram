@@ -1,6 +1,6 @@
 const Order = require('../models/Order');
 const sentenceController = require('./SentencesController');
-const responses = require('../config/responses').sentencesResponses;
+const responses = require('../config/responses').ordersResponses;
 
 
 /**

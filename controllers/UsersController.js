@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const responses = require('../config/responses').sentencesResponses;
+const responses = require('../config/responses').usersResponses;
 
 
 /**
