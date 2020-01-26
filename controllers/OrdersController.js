@@ -1,4 +1,5 @@
 const Order = require('../models/Order');
+const sentenceController = require('./SentencesController');
 const responses = require('../config/responses').sentencesResponses;
 
 
@@ -76,6 +77,7 @@ exports.addOrder = async (req,res) => {
         .then(result => {
             if(result) {
                 // add num of orders
+                sentenceController.addNumOfOrders(sentenceId);
                 return res.status(responses.ADD.SAVED_SUCCESSFULLY.code).json(responses.ADD.SAVED_SUCCESSFULLY.json);
             } else {
                 return res.status(responses.ADD.FAILURE.code).json(responses.ADD.FAILURE.json);
@@ -154,6 +156,7 @@ exports.deleteOrder = (req, res) => {
                 .then(result => {
                     if(result) {
                         // --num of orders
+                        sentenceController.minusNumOfOrders(sentenceId);
                         return res.status(responses.DELETE.SUCCESS.code).json(responses.DELETE.SUCCESS.json);
                     } else {
                         return res.status(responses.ERROR_OCCURRED.code).json(responses.ERROR_OCCURRED.json);

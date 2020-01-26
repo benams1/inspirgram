@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 
 const sentence = {
     isActive: {type: Boolean , default: true},
-    sentenceId: {type: Number ,required: true},
+    sentenceId: {type: Number ,required: true, unique: true},
     sentenceBody: { type: String, required: true },
     writerId: { type: Number, required: true },
     numOfOrders: { type: Number, required: true, default: 0 },
