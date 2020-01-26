@@ -71,7 +71,7 @@ exports.addOrder = async (req,res) => {
     if (typeof style == "object")
         orderData.style = style;
 
-    orderData.orderId = await getLastId()+1;
+    orderData.orderId = await getOrderLastId()+1;
     const order = new Order(orderData);
     order.save()
         .then(result => {
@@ -139,6 +139,7 @@ exports.updateOrder = (req, res) => {
 exports.deleteOrder = (req, res) => {
     let {orderId = null} = req.params;
     let { clientId = null } = req.body;
+    let numOfOrdersCheck;
     if(orderId === null || clientId === null ) {
         return res.status(responses.MISSING_PARAMS.code).json(responses.MISSING_PARAMS.json);
     } else {
@@ -156,7 +157,8 @@ exports.deleteOrder = (req, res) => {
                 .then(result => {
                     if(result) {
                         // --num of orders
-                        sentenceController.minusNumOfOrders(sentenceId);
+                        numOfOrdersCheck = sentenceController.minusNumOfOrders(sentenceId);
+                        console.log(`numOfOrdersCheck: ${numOfOrdersCheck}`)
                         return res.status(responses.DELETE.SUCCESS.code).json(responses.DELETE.SUCCESS.json);
                     } else {
                         return res.status(responses.ERROR_OCCURRED.code).json(responses.ERROR_OCCURRED.json);
@@ -179,7 +181,7 @@ handleDbError = (res, err) =>{
 };
 
 
-getLastId = async () => {
+getOrderLastId = async () => {
     const lastId = await Order.findOne({}).sort('-orderId');
     if(lastId)
         return lastId.orderId;

@@ -49,7 +49,7 @@ exports.addSentence = async (req,res) => {
     if (typeof style == "object")
         sentenceData.style = style;
 
-    sentenceData.sentenceId = await getLastId()+1;
+    sentenceData.sentenceId = await getSentenceLastId()+1;
     const sentence = new Sentence(sentenceData);
     sentence.save()
         .then(result => {
@@ -142,7 +142,7 @@ handleDbError = (res, err) =>{
 };
 
 
-getLastId = async () => {
+getSentenceLastId = async () => {
     const lastId = await Sentence.findOne({}).sort('-sentenceId');
     if(lastId)
         return lastId.sentenceId;
@@ -150,7 +150,7 @@ getLastId = async () => {
         return 0;
 };
 
-exports.addNumOfOrders = (res, sentenceId) => {
+exports.addNumOfOrders = sentenceId => {
     Sentence.findOne({sentenceId: sentenceId})
         .then( doc => {
             if( doc === null )
@@ -159,11 +159,9 @@ exports.addNumOfOrders = (res, sentenceId) => {
             doc.save()
                 .then(result => {
                     if(result) {
-                        res = 1;
-                        return res;
+                        return true;
                     } else {
-                        res = 0;
-                        return res;
+                        return false;
                     }
                 })
                 .catch(err => {
