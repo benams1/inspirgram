@@ -1,12 +1,12 @@
 const User = require('../models/User');
-const responses = require('../config/responses').sentencesResponses;
+const responses = require('../config/responses').usersResponses;
 
 
 /**
  * get all users function
  */
 exports.getAllUsers = (req , res) => {
-    User.find()
+    User.find({isActive: true})
         .then( doc => {
             if( doc === null ) {
                 return res.status(responses.NOT_FOUND.code).json(responses.NOT_FOUND.json);
@@ -33,7 +33,7 @@ exports.getUserById = (req , res) => {
     } else {
         userId = parseInt(userId);
     }
-    User.findOne({userId: userId})
+    User.findOne({userId: userId, isActive: true})
         .then( doc => {
             if( doc === null ) {
                 return res.status(responses.NOT_FOUND.code).json(responses.NOT_FOUND.json);
@@ -55,7 +55,7 @@ exports.getUserById = (req , res) => {
  */
 exports.isUser = (req , res) => {
     const { password, email } = req.body;
-    User.findOne({password: password, email: email})
+    User.findOne({password: password, email: email, isActive: true})
         .then( doc => {
             if( doc === null ) {
                 return res.status(responses.NOT_FOUND.code).json(responses.NOT_FOUND.json);
@@ -82,7 +82,7 @@ exports.isWriter = (req , res) => {
     } else {
         userId = parseInt(userId);
     }
-    User.findOne({userId: userId, userType: "writer"})
+    User.findOne({userId: userId, userType: "writer", isActive: true})
         .then( doc => {
             if( doc === null ) {
                 return res.status(responses.NOT_FOUND.code).json(responses.NOT_FOUND.json);
@@ -103,18 +103,17 @@ exports.isWriter = (req , res) => {
  */ 
 exports.addUser = async (req,res) => {
 
-    let { name, password, email, age, userType } = req.body;
+    let { name, password, email, userType } = req.body;
 
-    if(typeof name == "undefined" || typeof password == "undefined" || typeof email == "undefined" || typeof age == "undefined")
+    if(typeof name == "undefined" || typeof password == "undefined" || typeof email == "undefined")
         return res.status(responses.MISSING_PARAMS.code).json(responses.MISSING_PARAMS.json);
 
-    age = parseInt(age);
     if((userType !== "writer") && (userType !== "client")) 
         return res.status(responses.WRONG_PARAMS.code).json(responses.WRONG_PARAMS.json);
 
-    const userData = { name: name, password: password, email: email, age: age, userType: userType};
+    const userData = { name: name, password: password, email: email, userType: userType};
 
-    userData.userId = await getLastId()+1;
+    userData.userId = await getUserLastId()+1;
     const user = new User(userData);
     user.save()
         .then(result => {
@@ -135,7 +134,7 @@ exports.addUser = async (req,res) => {
 exports.updateUser = (req, res) => {
     let {userId = null} = req.params;
     userId = parseInt(userId);
-    let { name = null , password = null , email = null, age = null, userType = null } = req.body;
+    let { name = null , password = null , email = null, userType = null } = req.body;
     
     User.findOne({userId: userId})
         .then( doc => {
@@ -145,10 +144,6 @@ exports.updateUser = (req, res) => {
             doc.name = name !== null ? name : doc.name;
             doc.password = password !== null ? password : doc.passwor ;
             doc.email = email !== null ? email : doc.email;
-            if(age !== null) {
-                age = parseInt(age);
-                doc.age = age;
-            }
             if(userType !== null) {
                 if(userType === "writer" || userType === "client")
                     doc.userType = userType;
@@ -209,7 +204,7 @@ handleDbError = (res, err) =>{
 };
 
 
-getLastId = async () => {
+getUserLastId = async () => {
     const lastId = await User.findOne({}).sort('-userId');
     if(lastId)
         return lastId.userId;

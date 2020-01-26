@@ -20,7 +20,7 @@ exports.getAllSentences = (req, res) => {
         retData.json.data = sentences;
         res.status(retData.code).json(retData.json);
     };
-    return generalGet(req, res,{}, then_func);
+    return generalGet(req, res,{isActive: true}, then_func);
 };
 /**
  * get specific sentence function
@@ -35,7 +35,7 @@ exports.getSentence = (req , res) => {
         else
             res.status(responses.NOT_FOUND.code).json(responses.NOT_FOUND.json);
     };
-    return generalGet(req, res , {sentenceId: req.params.sentenceId},then_func);
+    return generalGet(req, res , {sentenceId: req.params.sentenceId, isActive: true},then_func);
 };
 
 exports.addSentence = async (req,res) => {
@@ -44,12 +44,12 @@ exports.addSentence = async (req,res) => {
     if(typeof sentenceBody == "undefined" || typeof writerId == "undefined")
         return res.status(responses.MISSING_PARAMS.code).json(responses.MISSING_PARAMS.json);
 
-    const sentenceData = { sentenceBody:sentenceBody, writerId: writerId};
+    const sentenceData = { sentenceBody: sentenceBody, writerId: writerId};
 
     if (typeof style == "object")
         sentenceData.style = style;
 
-    sentenceData.sentenceId = await getLastId()+1;
+    sentenceData.sentenceId = await getSentenceLastId()+1;
     const sentence = new Sentence(sentenceData);
     sentence.save()
         .then(result => {
@@ -101,7 +101,6 @@ exports.updateSentence = (req, res) => {
             err => {
                 return handleDbError(res, err);
             });
-
 };
 
 
@@ -143,12 +142,60 @@ handleDbError = (res, err) =>{
 };
 
 
-getLastId = async () => {
+getSentenceLastId = async () => {
     const lastId = await Sentence.findOne({}).sort('-sentenceId');
     if(lastId)
         return lastId.sentenceId;
     else
         return 0;
 };
+
+exports.addNumOfOrders = sentenceId => {
+    Sentence.findOne({sentenceId: sentenceId})
+        .then( doc => {
+            if( doc === null )
+                return false;
+            doc.numOfOrders += 1;
+            doc.save()
+                .then(result => {
+                    if(result) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                })
+                .catch(err => {
+                    return false;
+                })
+        })
+        .catch(
+            err => {
+                return false;
+            });
+}
+
+exports.minusNumOfOrders = sentenceId => {
+    Sentence.findOne({sentenceId: sentenceId})
+        .then( doc => {
+            if( doc === null )
+                return false;
+            doc.numOfOrders -= 1;
+            doc.save()
+                .then(result => {
+                    if(result) {
+                        return true;
+                    } else {
+                        return true;
+                    }
+                })
+                .catch(err => {
+                    return false;
+                })
+        })
+        .catch(
+            err => {
+                return false;
+            });
+}
 
 

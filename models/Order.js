@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const order = {
-    orderId: { type: Number, required: true },
+    orderId: { type: Number, required: true, unique: true },
     sentenceId: { type: Number, required: true },
     clientId: { type: Number, required: true },
     orderDate: { type: Date, required: true, default: Date.now },

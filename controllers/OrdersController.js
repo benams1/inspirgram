@@ -1,5 +1,6 @@
 const Order = require('../models/Order');
-const responses = require('../config/responses').sentencesResponses;
+const sentenceController = require('./SentencesController');
+const responses = require('../config/responses').ordersResponses;
 
 
 /**
@@ -70,12 +71,13 @@ exports.addOrder = async (req,res) => {
     if (typeof style == "object")
         orderData.style = style;
 
-    orderData.orderId = await getLastId()+1;
+    orderData.orderId = await getOrderLastId()+1;
     const order = new Order(orderData);
     order.save()
         .then(result => {
             if(result) {
                 // add num of orders
+                sentenceController.addNumOfOrders(sentenceId);
                 return res.status(responses.ADD.SAVED_SUCCESSFULLY.code).json(responses.ADD.SAVED_SUCCESSFULLY.json);
             } else {
                 return res.status(responses.ADD.FAILURE.code).json(responses.ADD.FAILURE.json);
@@ -136,24 +138,25 @@ exports.updateOrder = (req, res) => {
  */ 
 exports.deleteOrder = (req, res) => {
     let {orderId = null} = req.params;
-    let { clientId = null } = req.body;
-    if(orderId === null || clientId === null ) {
+    let { sentenceId = null } = req.body;
+    if(orderId === null || sentenceId === null ) {
         return res.status(responses.MISSING_PARAMS.code).json(responses.MISSING_PARAMS.json);
     } else {
         orderId = parseInt(orderId);
-        clientId = parseInt(clientId);
+        sentenceId = parseInt(sentenceId);
     }
 
-    Order.findOne({orderId: orderId, clientId: clientId, isActive: true})
+    Order.findOne({orderId: orderId, isActive: true})
         .then(doc => {
             if( doc === null )
                 return res.status(responses.NOT_FOUND.code).json(responses.NOT_FOUND.json);
-
+                
             doc.isActive = false;
             doc.save()
                 .then(result => {
                     if(result) {
                         // --num of orders
+                        sentenceController.minusNumOfOrders(sentenceId);
                         return res.status(responses.DELETE.SUCCESS.code).json(responses.DELETE.SUCCESS.json);
                     } else {
                         return res.status(responses.ERROR_OCCURRED.code).json(responses.ERROR_OCCURRED.json);
@@ -176,7 +179,7 @@ handleDbError = (res, err) =>{
 };
 
 
-getLastId = async () => {
+getOrderLastId = async () => {
     const lastId = await Order.findOne({}).sort('-orderId');
     if(lastId)
         return lastId.orderId;
