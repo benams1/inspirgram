@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const authMiddleware = require('./middlewares/authMiddleware');
-const { SentencesRouter, OrdersRouter, UsersRouter } =require('./routers');
+const { SentenceRouter, OrdersRouter, UsersRouter ,PaypalRouter} =require('./routers');
 
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
@@ -19,7 +19,10 @@ app.use(authMiddleware);
 
     //here all the other routers and routs
 
-app.use('/sentences',SentencesRouter);
+app.use('/paypal', PaypalRouter);
+
+
+app.use('/sentences',SentenceRouter);
 app.use('/orders', OrdersRouter);
 app.use('/users', UsersRouter);
 

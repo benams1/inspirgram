@@ -85,3 +85,37 @@ const sentencesResponses = {
 };
 
 exports.sentencesResponses = sentencesResponses;
+
+const paymentResponses = {
+    MISSING_PARAMS: genericResponses.MISSING_PARAMS,
+    INCORRECT_VALUES:{
+        code: 400,
+        json:{
+            status: 0,
+            message:'incorrect item structure',
+        },
+    },
+    DB_ERROR: genericResponses.DB_ERROR,
+    SAVE_ERROR: {
+        code: 502,
+        json:{
+            status: 0,
+            message:'error while trying to save to DB',
+        },
+    },
+    CREATE_PAYMENT_ERROR:{
+        code: 502,
+        json:{
+            status: 0,
+            message:'error to create payment: ',
+        },
+    },
+    EXECUTE_PAYMENT_ERROR:{
+        code: 502,
+        json:{
+            status: 0,
+            message:'error to execute payment: ',
+        },
+    },
+};
+exports.paymentResponses = paymentResponses;
