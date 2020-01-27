@@ -3,7 +3,7 @@ const app = express();
 const authMiddleware = require('./middlewares/authMiddleware');
 const { SentenceRouter, OrdersRouter, UsersRouter ,PaypalRouter} =require('./routers');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 app.use(express.json());
 
 app.use(
