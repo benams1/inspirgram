@@ -5,6 +5,7 @@ const { getAllUsers,
     isUser,
     isWriter,
     addUser,
+    addFacebookUser,
     updateUser,
     deleteUser } = require('../controllers/UsersController');
 
@@ -22,6 +23,9 @@ UsersRouter.get('/isWriter/:userId', isWriter);
 
 //path = /users
 UsersRouter.post('/', addUser);
+
+//path = /users/facebookUser
+UsersRouter.post('/facebookUser', addFacebookUser);
 
 //path = /users/updateUser/<userId>
 UsersRouter.put('/updateUser/:userId', updateUser);

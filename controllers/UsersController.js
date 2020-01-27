@@ -129,6 +129,33 @@ exports.addUser = async (req,res) => {
 };
 
 /**
+ * add facebook user function
+ */ 
+exports.addFacebookUser = async (req,res) => {
+
+    let { name, email} = req.body;
+
+    if(typeof name == "undefined" || typeof email == "undefined")
+        return res.status(responses.MISSING_PARAMS.code).json(responses.MISSING_PARAMS.json);
+
+    const userData = { name: name, password: 'facebookPassword', email: email, userType: 'client'};
+
+    userData.userId = await getUserLastId()+1;
+    const user = new User(userData);
+    user.save()
+        .then(result => {
+            if(result)
+                return res.status(responses.ADD.SAVED_SUCCESSFULLY.code).json(responses.ADD.SAVED_SUCCESSFULLY.json);
+            else
+                return res.status(responses.ADD.FAILURE.code).json(responses.ADD.FAILURE.json);
+        })
+        .catch(
+            err => {
+                return handleDbError(res, err);
+            });
+};
+
+/**
  * update user function
  */ 
 exports.updateUser = (req, res) => {
