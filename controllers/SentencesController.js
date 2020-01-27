@@ -159,18 +159,22 @@ exports.addNumOfOrders = sentenceId => {
             doc.save()
                 .then(result => {
                     if(result) {
-                        return true;
+                        console.log(`successfuly updated num of orders for sentence id: ${sentenceId}!`);
+                        return;
                     } else {
-                        return false;
+                        console.log(`unsuccessfuly updated num of orders for sentence id: ${sentenceId}`);
+                        return;
                     }
                 })
                 .catch(err => {
-                    return false;
+                    console.log(`unsuccessfuly updated num of orders for sentence id: ${sentenceId}, DB error!`);
+                    return;
                 })
         })
         .catch(
             err => {
-                return false;
+                console.log(`unsuccessfuly updated num of orders for sentence id: ${sentenceId}, sentence dosent found!!`);
+                return;
             });
 };
 
@@ -183,18 +187,22 @@ exports.minusNumOfOrders = sentenceId => {
             doc.save()
                 .then(result => {
                     if(result) {
-                        return true;
+                        console.log(`successfuly updated num of orders for sentence id: ${sentenceId}!`);
+                        return;
                     } else {
-                        return true;
+                        console.log(`unsuccessfuly updated num of orders for sentence id: ${sentenceId}`);
+                        return;
                     }
                 })
                 .catch(err => {
-                    return false;
+                    console.log(`unsuccessfuly updated num of orders for sentence id: ${sentenceId}, DB error!`);
+                    return;
                 })
         })
         .catch(
             err => {
-                return false;
+                console.log(`unsuccessfuly updated num of orders for sentence id: ${sentenceId}, sentence dosent found!`);
+                return;
             });
 }
 

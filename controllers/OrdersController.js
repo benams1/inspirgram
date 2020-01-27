@@ -74,7 +74,7 @@ exports.addOrder = async (req,res) => {
     orderData.orderId = await getOrderLastId()+1;
     const order = new Order(orderData);
     order.save()
-        .then(result => {
+        .then( result => {
             if(result) {
                 // add num of orders
                 sentenceController.addNumOfOrders(sentenceId);
