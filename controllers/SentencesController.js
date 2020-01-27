@@ -172,7 +172,7 @@ exports.addNumOfOrders = sentenceId => {
             err => {
                 return false;
             });
-}
+};
 
 exports.minusNumOfOrders = sentenceId => {
     Sentence.findOne({sentenceId: sentenceId})
