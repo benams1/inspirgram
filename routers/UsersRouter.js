@@ -2,7 +2,7 @@ const { Router } = require('express');
 const UsersRouter = new Router();
 const { getAllUsers,
     getUserById,
-    isUser,
+    authUser,
     isWriter,
     addUser,
     addFacebookUser,
@@ -15,8 +15,8 @@ UsersRouter.get('/', getAllUsers);
 //path = /users/getUser/<userId>
 UsersRouter.get('/getUser/:userId', getUserById);
 
-//path = /users/isUser
-UsersRouter.get('/isUser', isUser);
+//path = /users/authUser
+UsersRouter.get('/authUser', authUser);
 
 //path = /users/isWriter?userId=x
 UsersRouter.get('/isWriter/:userId', isWriter);

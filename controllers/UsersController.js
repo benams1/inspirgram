@@ -21,7 +21,7 @@ exports.getAllUsers = (req , res) => {
         })
         .catch(
             err => {
-                console.log(`usersController - get all users orders request db error ${err.name} message: ${err.message}`);
+                console.log(`usersController - get all users request db error ${err.name} message: ${err.message}`);
                 return handleDbError(res, err);
             });
 };
@@ -53,7 +53,7 @@ exports.getUserById = (req , res) => {
         })
         .catch(
             err => {
-                console.log(`usersController - get all users orders request db error ${err.name} message: ${err.message}`);
+                console.log(`usersController - get user by id request db error ${err.name} message: ${err.message}`);
                 return handleDbError(res, err);
             });
 };
@@ -62,16 +62,18 @@ exports.getUserById = (req , res) => {
 /**
  * if the user exist (log-in) function
  */
-exports.isUser = (req , res) => {
-    console.log('usersController - isUser request received');
+exports.authUser = (req , res) => {
+    console.log('usersController - authUser request received');
     const { password, email } = req.body;
+    // let userId = 1;
+    console.log(`password: ${password}, email: ${email}`);
     User.findOne({password: password, email: email, isActive: true})
         .then( doc => {
             if( doc === null ) {
-                console.log(`usersController - isUser request - user id ${userId} is not found`);
+                console.log(`usersController - authUser request - user mail ${email} is not found`);
                 return res.status(responses.NOT_FOUND.code).json(responses.NOT_FOUND.json);
             } else {
-                console.log(`usersController - isUser request - user id ${userId} returned to client`);
+                console.log(`usersController - authUser request - user mail ${email} returned to client`);
                 const retData = responses.GET.SUCCESS;
                 retData.json.data = doc;
                 res.status(retData.code).json(retData.json);
@@ -79,7 +81,7 @@ exports.isUser = (req , res) => {
         })
         .catch(
             err => {
-                console.log(`usersController - get all users orders request db error ${err.name} message: ${err.message}`);
+                console.log(`usersController - get authUser request db error ${err.name} message: ${err.message}`);
                 return handleDbError(res, err);
             });
 };
