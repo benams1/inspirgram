@@ -11,7 +11,7 @@ SentencesRouter.get('/', getAllSentences);
 //path = /sentences/<sentenceId>
 SentencesRouter.get('/:sentenceId', getSentence);
 //path = /sentences/getByWriterId/<writerId>
-SentencesRouter.get('/getByWriterId/:sentenceId', getSentenceByWriterId);
+SentencesRouter.get('/getByWriterId/:writerId', getSentenceByWriterId);
 //path = /sentences
 SentencesRouter.post('/',addSentence);
 //path = /sentences/<sentenceId>

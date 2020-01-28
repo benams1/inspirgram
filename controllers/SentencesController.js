@@ -39,8 +39,7 @@ exports.getSentence = (req , res) => {
         else
             res.status(responses.NOT_FOUND.code).json(responses.NOT_FOUND.json);
     };
-    return generalGet(req, res , {writerId: req.params.writerId, isActive: true},then_func);
-    // return generalGet(req, res , {sentenceId: req.params.sentenceId, isActive: true},then_func);
+    return generalGet(req, res , {sentenceId: req.params.sentenceId, isActive: true},then_func);
 };
 
 /**
