@@ -2,6 +2,7 @@ const { Router } = require('express');
 const SentencesRouter = new Router();
 const { getAllSentences,
         getSentence,
+        getSentenceByWriterId,
         addSentence,
         updateSentence,
         deleteSentence } = require('../controllers/SentencesController');
@@ -9,6 +10,8 @@ const { getAllSentences,
 SentencesRouter.get('/', getAllSentences);
 //path = /sentences/<sentenceId>
 SentencesRouter.get('/:sentenceId', getSentence);
+//path = /sentences/getByWriterId/<writerId>
+SentencesRouter.get('/getByWriterId/:sentenceId', getSentenceByWriterId);
 //path = /sentences
 SentencesRouter.post('/',addSentence);
 //path = /sentences/<sentenceId>

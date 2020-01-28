@@ -39,8 +39,28 @@ exports.getSentence = (req , res) => {
         else
             res.status(responses.NOT_FOUND.code).json(responses.NOT_FOUND.json);
     };
-    return generalGet(req, res , {sentenceId: req.params.sentenceId, isActive: true},then_func);
+    return generalGet(req, res , {writerId: req.params.writerId, isActive: true},then_func);
+    // return generalGet(req, res , {sentenceId: req.params.sentenceId, isActive: true},then_func);
 };
+
+/**
+ * get sentence by writer id function
+ */
+exports.getSentenceByWriterId = (req , res) => {
+    console.log(`sentenceController - get sentence by writer id request received`);
+    const then_func = sentences =>{
+        if(sentences.length !== 0){
+            console.log(`sentenceController - get sentence by writer id request returned successfully`);
+            const retData = responses.GET.SUCCESS;
+            retData.json.data = sentences;
+            res.status(retData.code).json(retData.json);
+        }
+        else
+            res.status(responses.NOT_FOUND.code).json(responses.NOT_FOUND.json);
+    };
+    return generalGet(req, res , {writerId: req.params.writerId, isActive: true},then_func);
+};
+
 
 exports.addSentence = async (req,res) => {
     const { sentenceBody, writerId, style } = req.body;
