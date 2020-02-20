@@ -1,0 +1,4 @@
+exports.AllowedUserTypes = [
+    'writer',
+    'client',
+];

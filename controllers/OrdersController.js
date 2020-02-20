@@ -1,7 +1,7 @@
 const Order = require('../models/Order');
 const sentenceController = require('./SentencesController');
 const responses = require('../config/responses').ordersResponses;
-
+const {isset} = require('../utilities/generalHelpers');
 
 /**
  * get all orders function
@@ -10,7 +10,7 @@ const responses = require('../config/responses').ordersResponses;
      console.log('ordersController - get all orders request received ');
     Order.find({isActive: true})
         .then(docs => {
-            if( docs === null ) {
+            if(!isset(docs)) {
                 console.log('ordersController - get all orders request orders not found');
                 return res.status(responses.NOT_FOUND.code).json(responses.NOT_FOUND.json);
             } else {
@@ -33,7 +33,7 @@ const responses = require('../config/responses').ordersResponses;
 exports.getAllClientOrders = (req, res) => {
     console.log('ordersController - get all client orders request received');
     let { clientId } = req.params;
-    if(clientId === null) {
+    if(!isset(clientId)) {
         console.log('ordersController - get all client orders request - missing parameters');
         return res.status(responses.MISSING_PARAMS.code).json(responses.MISSING_PARAMS.json);
     } else {
@@ -42,7 +42,7 @@ exports.getAllClientOrders = (req, res) => {
 
     Order.find({clientId: clientId, isActive: true})
         .then(docs => {
-            if( docs === null ) {
+            if(!isset(docs)  ) {
                 console.log(`ordersController - get all client orders request - client id = ${clientId}  orders not found`);
                 return res.status(responses.NOT_FOUND.code).json(responses.NOT_FOUND.json);
             } else {

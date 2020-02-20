@@ -6,4 +6,6 @@ module.exports = {
         client_secret: process.env.PAYPAL_CLIENT_SECRET
     },
     APP_URL: process.env.URL,
+    TOKEN_NAME:'inspirgram_auth_token',
+    SESSION_PERIOD:3600 ,//in seconds
 };

@@ -5,11 +5,12 @@ const user = {
     name: { type: String, required: true },
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    userType: { 
-        type: String, 
+    userType: {
+        type: String,
         required: true,
         enum: ["client", "writer"]
      },
+    userRegistrationType: {type:String, required:true, enum: ['facebook','email']} ,
      isActive: {type: Boolean , default: true},
 };
 

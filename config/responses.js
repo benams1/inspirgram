@@ -44,9 +44,13 @@ const genericResponses = {
             message: `error occurred`
         },
     },
+    UNAUTHORIZED_USER:{
+        code: 401,
+        json:{status: 0, message: 'unauthorized user' }
+    },
 };
 
-exports.genericsReponces = genericResponses;
+exports.genericsReponses = genericResponses;
 
 
 const sentencesResponses = {
@@ -156,6 +160,28 @@ const usersResponses = {
     MISSING_PARAMS: genericResponses.MISSING_PARAMS,
     WRONG_PARAMS: genericResponses.WRONG_PARAMS,
     ERROR_OCCURRED: genericResponses.ERROR_OCCURRED,
+    UNAUTHORIZED_USER: genericResponses.UNAUTHORIZED_USER,
+    USER_ALREADY_EXISTS: {
+        code: 409,
+        json: {
+            status: 0,
+            message: 'user already exists',
+        }
+    },
+    USER_AUTH_SUCCESSFULLY: {
+        code: 200,
+        json:{
+            status: 1,
+            message:" user authenticated successfully",
+        }
+    },
+    TOKEN_ERROR:{
+        code: 500,
+        json: {
+            status:0,
+            message: 'error generate token',
+        }
+    },
 };
 
 exports.usersResponses = usersResponses;
