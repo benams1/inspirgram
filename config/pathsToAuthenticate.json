@@ -1,6 +1,16 @@
 {
     "paths":[
-        "/app/add/sentence",
-        "/users/"
+        {
+            "method": "GET",
+            "path": "/users/"
+        },
+        {
+            "method": "PUT",
+            "path": "/users/"
+        },
+        {
+            "method": "DELETE",
+            "path": "/users/"
+        }
     ]
 }

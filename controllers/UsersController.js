@@ -70,7 +70,7 @@ exports.authEmailUser = (req , res) => {
     }
     User.findOne({ email: email, isActive: true})
         .then(async user => {
-            if( isset(user) ) {
+            if( !isset(user) ) {
                 console.log(`usersController - authUser request - user mail ${email} is not found`);
                 return res.status(responses.NOT_FOUND.code).json(responses.NOT_FOUND.json);
             } else {
@@ -89,7 +89,7 @@ exports.authEmailUser = (req , res) => {
                             if (err){
                                 return res.status(responses.TOKEN_ERROR.code).json(responses.TOKEN_ERROR.json);
                             }
-                            const userResObj = {...responses.ADD.SAVED_SUCCESSFULLY.json, userParams:{...getUserParams(user), token}};
+                            const userResObj = {...responses.ADD.USER_AUTH_SUCCESSFULLY.json, userParams:{...getUserParams(user), token}};
                             return res.status(responses.USER_AUTH_SUCCESSFULLY.code).json(userResObj);
                         }
                     );
@@ -116,24 +116,52 @@ const getUserParams = (result) => {
     return {id: result.userId, name: result.name, email: result.email, userType: result.userType};
 };
 
+function generateRegisterResponseToken(result, res) {
+    jwt.sign(getTokenPayload(result), jwtSecret, {expiresIn: SESSION_PERIOD}, (err, token) => {
+        const userResObj = {...responses.ADD.SAVED_SUCCESSFULLY.json, userParams: getUserParams(result)};
+        userResObj.userParams.token = (!err) ? token : null;
+        return res.status(responses.ADD.SAVED_SUCCESSFULLY.code).json(userResObj);
+    })
+}
+
 /**
  * add user function
  */
-exports.addUser = async (req,res) => {
+exports.addUser = (req,res) => {
     console.log('usersController - addUser request received');
     let { name, password, email, userType, userAuthType } = req.body;
     if( !isset(name) || !isset(password) || !isset(email) ){
         console.log(`usersController - addUser request - missing parameters`);
         return res.status(responses.MISSING_PARAMS.code).json(responses.MISSING_PARAMS.json);
     }
-    if(!AllowedUserTypes.includes(userType) || userAuthType !== 'email'){
+    if(!AllowedUserTypes.includes(userType) ){
         console.log(`usersController - addUser user type ${userType}  not supported`);
         return res.status(responses.WRONG_PARAMS.code).json(responses.WRONG_PARAMS.json);
     }
-    User.findOne({email: email, isActive: true})
+    User.findOne({email: email})
         .then(async user => {
             if (user){
-                res.status(responses.USER_ALREADY_EXISTS.code).json(responses.USER_ALREADY_EXISTS.json);
+                if (user.isActive === false)
+                {
+                    user.isActive = true;
+                    user.password = await hashPassword(password);
+                    user.userRegistrationType = userAuthType;
+                    user.save()
+                        .then( result =>{
+                            if (result){
+                                console.log(`usersController - user is reactivated`);
+                                return  generateRegisterResponseToken(result, res);
+                            }
+                            else{
+                                return res.status(responses.ADD.FAILURE.code).json(responses.ADD.FAILURE.json);
+                            }
+                        }).catch(err => {
+                            console.log(`usersController - get all users orders request db error ${err.name} message: ${err.message}`);
+                            return handleDbError(res, err);
+                        });
+                }
+                else
+                    res.status(responses.USER_ALREADY_EXISTS.code).json(responses.USER_ALREADY_EXISTS.json);
             }
             else{
                 const userData = { name: name, password:  await hashPassword(password), email: email, userType: userType, userRegistrationType: userAuthType};
@@ -143,11 +171,12 @@ exports.addUser = async (req,res) => {
                     .then(result => {
                         if(result){
                             console.log(`usersController - addUser user saved successfully`);
-                            jwt.sign(getTokenPayload(result),jwtSecret,{expiresIn: SESSION_PERIOD}, (err,token) => {
-                                const userResObj = {...responses.ADD.SAVED_SUCCESSFULLY.json, userParams:getUserParams(result)};
-                                userResObj.userParams.token = (!err) ? token : null;
-                                return res.status(responses.ADD.SAVED_SUCCESSFULLY.code).json(userResObj);
-                            });
+                            generateRegisterResponseToken(result, res)
+                            // jwt.sign(getTokenPayload(result),jwtSecret,{expiresIn: SESSION_PERIOD}, (err,token) => {
+                            //     const userResObj = {...responses.ADD.SAVED_SUCCESSFULLY.json, userParams:getUserParams(result)};
+                            //     userResObj.userParams.token = (!err) ? token : null;
+                            //     return res.status(responses.ADD.SAVED_SUCCESSFULLY.code).json(userResObj);
+                            // });
                         }
                         else{
                             console.log(`usersController - addUser error to save user`);
@@ -175,26 +204,36 @@ exports.addFacebookUser = async (req,res) => {
 
     if( !isset(name)|| !isset(email))
         return res.status(responses.MISSING_PARAMS.code).json(responses.MISSING_PARAMS.json);
-
-    const userData = { name: name, password: await hashPassword(randomString.generate(10)), email: email, userType: 'client',userRegistrationType: "facebook"};
-
-    userData.userId = await getUserLastId()+1;
-    const user = new User(userData);
-    user.save()
-        .then(result => {
-            if(result){
-                jwt.sign(getTokenPayload(result), jwtSecret, {expiresIn: 3600},(err, token)=>{
-                    const userResObj = {...responses.ADD.SAVED_SUCCESSFULLY.json, userParams:{...getUserParams(user), token}};
-                    return res.status(responses.ADD.SAVED_SUCCESSFULLY.code).json(responses.ADD.SAVED_SUCCESSFULLY.json);
-                });
+    User.findOne({email: email, isActive: true})
+        .then(async doc =>{
+            if (doc){
+                res.status(responses.USER_ALREADY_EXISTS.code).json(responses.USER_ALREADY_EXISTS.json);
             }
             else
-                return res.status(responses.ADD.FAILURE.code).json(responses.ADD.FAILURE.json);
+            {
+                const userData = { name: name, password: await hashPassword(randomString.generate(10)), email: email, userType: 'client',userRegistrationType: "facebook"};
+                userData.userId = await getUserLastId()+1;
+                const user = new User(userData);
+                user.save()
+                    .then(result => {
+                        if(result){
+                            jwt.sign(getTokenPayload(result), jwtSecret, {expiresIn: 3600},(err, token)=>{
+                                const userResObj = {...responses.ADD.SAVED_SUCCESSFULLY.json, userParams:{...getUserParams(user), token}};
+                                return res.status(responses.ADD.SAVED_SUCCESSFULLY.code).json(userResObj);
+                            });
+                        }
+                        else
+                            return res.status(responses.ADD.FAILURE.code).json(responses.ADD.FAILURE.json);
+                    })
+                    .catch(
+                        err => {
+                            return handleDbError(res, err);
+                        });
+            }
         })
-        .catch(
-            err => {
-                return handleDbError(res, err);
-            });
+        .catch(err =>{
+            return handleDbError(res, err);
+        });
 };
 
 /**
@@ -202,11 +241,11 @@ exports.addFacebookUser = async (req,res) => {
  */
 exports.updateUser = (req, res) => {
     console.log('usersController - updateUser request received');
-    let {userId = null} = req.params;
+    let {userId = null} = req.AuthUser;
     userId = parseInt(userId);
     let { name = null , password = null , email = null, userType = null } = req.body;
 
-    User.findOne({userId: userId})
+    User.findOne({userId: userId, isActive:true })
         .then( doc => {
             if( !isset(doc)){
                 console.log(`usersController - updateUser user with user id ${userId} not  found`);
@@ -249,13 +288,11 @@ exports.updateUser = (req, res) => {
  */
 exports.deleteUser = (req, res) => {
     console.log('usersController - delete user request received');
-    let {userId = null} = req.params;
+    let {userId = null} = req.AuthUser;
     if(!isset(userId)){
         console.log(`usersController - delete user request - missing parameters`);
         return res.status(responses.MISSING_PARAMS.code).json(responses.MISSING_PARAMS.json);
     }
-    userId = parseInt(userId);
-
     User.findOne({userId: userId})
         .then(doc => {
             if(!isset(doc)){
