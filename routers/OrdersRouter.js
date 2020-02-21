@@ -6,19 +6,19 @@ const { getAllOrders,
     updateOrder,
     deleteOrder } = require('../controllers/OrdersController');
 
-//path = /orders/getAllOrders
-OrdersRouter.get('/getAllOrders', getAllOrders);
+//path = /orders/all
+OrdersRouter.get('/all', getAllOrders);
 
-//path = /orders/getAllClientOrders/<userId>
-OrdersRouter.get('/getAllClientOrders/:clientId', getAllClientOrders);
+//path = /orders/allClient
+OrdersRouter.get('/allClient', getAllClientOrders);
 
 //path = /orders/addOrder
-OrdersRouter.post('/addOrder', addOrder);
+OrdersRouter.post('/', addOrder);
 
-//path = /ordresupdateOrder/<orderId>
-OrdersRouter.put('/updateOrder/:orderId', updateOrder);
+//path = /orders/
+OrdersRouter.put('/', updateOrder);
 
-//path = /orders/deleteOrder/<orderId>
-OrdersRouter.delete('/deleteOrder/:orderId', deleteOrder);
+//path = /orders/
+OrdersRouter.delete('/', deleteOrder);
 
 module.exports = OrdersRouter;

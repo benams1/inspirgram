@@ -89,7 +89,7 @@ exports.authEmailUser = (req , res) => {
                             if (err){
                                 return res.status(responses.TOKEN_ERROR.code).json(responses.TOKEN_ERROR.json);
                             }
-                            const userResObj = {...responses.ADD.USER_AUTH_SUCCESSFULLY.json, userParams:{...getUserParams(user), token}};
+                            const userResObj = {...responses.USER_AUTH_SUCCESSFULLY.json, userParams:{...getUserParams(user), token}};
                             return res.status(responses.USER_AUTH_SUCCESSFULLY.code).json(userResObj);
                         }
                     );

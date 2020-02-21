@@ -2,7 +2,7 @@ const Order = require('../models/Order');
 const sentenceController = require('./SentencesController');
 const responses = require('../config/responses').ordersResponses;
 const {isset} = require('../utilities/generalHelpers');
-
+const {products} = require('../config/types');
 /**
  * get all orders function
  */
@@ -32,25 +32,23 @@ const {isset} = require('../utilities/generalHelpers');
  */
 exports.getAllClientOrders = (req, res) => {
     console.log('ordersController - get all client orders request received');
-    let { clientId } = req.params;
-    if(!isset(clientId)) {
+    let { userId } = req.AuthUser;
+    if(!isset(userId)) {
         console.log('ordersController - get all client orders request - missing parameters');
         return res.status(responses.MISSING_PARAMS.code).json(responses.MISSING_PARAMS.json);
-    } else {
-        clientId = parseInt(clientId);
     }
 
-    Order.find({clientId: clientId, isActive: true})
+    Order.find({clientId: userId, isActive: true})
         .then(docs => {
             if(!isset(docs)  ) {
-                console.log(`ordersController - get all client orders request - client id = ${clientId}  orders not found`);
+                console.log(`ordersController - get all client orders request - client id = ${userId}  orders not found`);
                 return res.status(responses.NOT_FOUND.code).json(responses.NOT_FOUND.json);
             } else {
-                console.log(`ordersController - get all client orders request - client id = ${clientId}  orders found and returned to client`);
+                console.log(`ordersController - get all client orders request - client id = ${userId}  orders found and returned to client`);
                 const retData = responses.GET.SUCCESS;
                 retData.json.data = docs;
                 res.status(retData.code).json(retData.json);
-                console.log(`ordersController - get all client orders request - client id = ${clientId}  orders found and returned to client`);
+                console.log(`ordersController - get all client orders request - client id = ${userId}  orders found and returned to client`);
             }
         })
         .catch(err =>{
@@ -65,17 +63,14 @@ exports.getAllClientOrders = (req, res) => {
  */
 exports.addOrder = async (req,res) => {
     console.log('ordersController - add order request received');
-    let { sentenceId, clientId, platform, style } = req.body;
-
-    if(typeof sentenceId == "undefined" || typeof clientId == "undefined") {
+    let { sentenceId, platform, style } = req.body;
+    const clientId = req.AuthUser.userId;
+    if(!isset(sentenceId) || !isset(clientId)) {
         console.log('ordersController - add order request missing parameters');
         return res.status(responses.MISSING_PARAMS.code).json(responses.MISSING_PARAMS.json);
-    } else {
-        sentenceId = parseInt(sentenceId);
-        clientId = parseInt(clientId);
     }
 
-    if(platform !== "canvas" && platform !== "photo" && platform !== "t-shirt"){
+    if( !products.includes(platform)){
         console.log(`ordersController - platform ${platform}  is not supported`);
         return res.status(responses.WRONG_PARAMS.code).json(responses.WRONG_PARAMS.json);
     }
@@ -111,20 +106,20 @@ exports.addOrder = async (req,res) => {
  */ //test
 exports.updateOrder = (req, res) => {
     console.log('ordersController - update order request received');
-    let {orderId = null} = req.params;
-    const { platform = null, style = null } = req.body;
+    let { platform = null, style = null, orderId = null } = req.body;
+    const { userId } = req.AuthUser;
     if(orderId === null) {
         console.log(`ordersController - update order missing order id`);
         return res.status(responses.MISSING_PARAMS.code).json(responses.MISSING_PARAMS.json);
-    } else {
-        orderId = parseInt(orderId);
     }
-    if(platform !== "canvas" && platform !== "photo" && platform !== "t-shirt"){
+    else
+        orderId = parseInt(orderId);
+    if(!products.includes(platform)){
         console.log(`ordersController - update order platform ${platform}  is not supported`);
         return res.status(responses.WRONG_PARAMS.code).json(responses.WRONG_PARAMS.json);
     }
 
-    Order.findOne({orderId: orderId, isActive: true})
+    Order.findOne({orderId: orderId, isActive: true, clientId: userId})
         .then( doc => {
             if( doc === null ){
                 console.log(`ordersController - update order order id: ${orderId} is not found`);
@@ -167,8 +162,8 @@ exports.updateOrder = (req, res) => {
  */
 exports.deleteOrder = (req, res) => {
     console.log('ordersController - delete order request received');
-    let {orderId = null} = req.params;
-    let { sentenceId = null } = req.body;
+    let { sentenceId = null , orderId = null} = req.body;
+    const {userId} = req.AuthUser;
     if(orderId === null || sentenceId === null ) {
         console.log(`ordersController - delete order missing parameters`);
         return res.status(responses.MISSING_PARAMS.code).json(responses.MISSING_PARAMS.json);
@@ -177,7 +172,7 @@ exports.deleteOrder = (req, res) => {
         sentenceId = parseInt(sentenceId);
     }
 
-    Order.findOne({orderId: orderId, isActive: true})
+    Order.findOne({orderId: orderId, isActive: true, clientId:userId})
         .then(doc => {
             if( doc === null ){
                 console.log(`ordersController - delete order order with order id: ${orderId} is not found`);

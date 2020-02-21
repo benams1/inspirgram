@@ -11,6 +11,22 @@
         {
             "method": "DELETE",
             "path": "/users/"
+        },
+        {
+            "method": "GET",
+            "path": "/orders/allClient"
+        },
+        {
+            "method": "POST",
+            "path": "/orders/"
+        },
+        {
+            "method": "PUT",
+            "path": "/orders/"
+        },
+        {
+            "method": "DELETE",
+            "path": "/orders/"
         }
     ]
 }
