@@ -1,5 +1,4 @@
 const {paths} = require('../config/pathsToAuthenticate');
-const {authEmailUser} = require('../controllers/UsersController') ;
 const responses = require('../config/responses').genericsReponses;
 const jwtSecret = process.env.JWT_SECRET;
 const jwt = require('jsonwebtoken');

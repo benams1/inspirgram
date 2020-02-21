@@ -114,11 +114,7 @@ exports.updateSentence = (req, res) => {
             }
 
             doc.sentenceBody = sentenceBody !== null ? sentenceBody : doc.sentenceBody ;
-            if(style !== null){
-                doc.style.textColor = style.textColor !== undefined ? style.textColor : doc.style.textColor;
-                doc.style.backgroundColor = style.backgroundColor !== undefined ? style.backgroundColor : doc.style.backgroundColor;
-                doc.style.fontFamily = style.fontFamily !== undefined ? style.fontFamily : doc.style.fontFamily;
-            }
+            doc.style = style !== null ? style : doc.style;
             doc.updatedAt = Date.now();
             doc.save()
                 .then(result => {

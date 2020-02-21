@@ -11,7 +11,7 @@ const user = {
         enum: ["client", "writer"]
      },
     userRegistrationType: {type:String, required:true, enum: ['facebook','email']} ,
-     isActive: {type: Boolean , default: true},
+    isActive: {type: Boolean , default: true},
 };
 
 const userSchema = new Schema(user);
