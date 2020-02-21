@@ -1,6 +1,6 @@
 const Sentence = require('../models/Sentence');
 const responses = require('../config/responses').sentencesResponses;
-
+const {isset} = require('../utilities/generalHelpers');
 
 generalGet = (req, res, searchTerm, then_func) => {
     Sentence.find(searchTerm)
@@ -64,7 +64,7 @@ exports.getSentenceByWriterId = (req , res) => {
 exports.addSentence = async (req,res) => {
     const { sentenceBody, writerId, style } = req.body;
     console.log(`sentenceController - add sentence request received`);
-    if(typeof sentenceBody == "undefined" || typeof writerId == "undefined"){
+    if( !isset(sentenceBody) || !isset(writerId)  ){
         console.log(`sentenceController - add sentence request - missing parameters`);
         return res.status(responses.MISSING_PARAMS.code).json(responses.MISSING_PARAMS.json);
     }
@@ -96,11 +96,10 @@ exports.addSentence = async (req,res) => {
 
 
 exports.updateSentence = (req, res) => {
-    let {sentenceId = null} = req.params;
-    sentenceId = parseInt(sentenceId);
-    const { sentenceBody = null , style = null , userId = null } = req.body;
+    let { sentenceBody = null , style = null, sentenceId = null} = req.body, {userId = null} = req.AuthUser ;
     if(sentenceId === null || userId === null)
         return res.status(responses.MISSING_PARAMS.code).json(responses.MISSING_PARAMS.json);
+    sentenceId = parseInt(sentenceId);
     Sentence.findOne({sentenceId: sentenceId})
         .then( doc => {
             if( doc === null ){
@@ -147,8 +146,8 @@ exports.updateSentence = (req, res) => {
 
 
 exports.deleteSentence = (req, res) => {
-    const {sentenceId = null} = req.params;
-    const { userId = null } = req.body;
+    const {sentenceId = null} = req.body;
+    const { userId = null } = req.AuthUser;
     if(sentenceId === null || userId === null ){
         console.log(`sentenceController - delete sentence request - missing parameters`);
         return res.status(responses.MISSING_PARAMS.code).json(responses.MISSING_PARAMS.json);

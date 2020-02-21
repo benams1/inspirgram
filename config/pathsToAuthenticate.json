@@ -27,6 +27,18 @@
         {
             "method": "DELETE",
             "path": "/orders/"
+        },
+        {
+            "method": "POST",
+            "path": "/sentences/"
+        },
+        {
+            "method": "PUT",
+            "path": "/sentences/"
+        },
+        {
+            "method": "DELETE",
+            "path": "/sentences/"
         }
     ]
 }

@@ -15,9 +15,9 @@ SentencesRouter.get('/getByWriterId/:writerId', getSentenceByWriterId);
 //path = /sentences
 SentencesRouter.post('/',addSentence);
 //path = /sentences/<sentenceId>
-SentencesRouter.put('/:sentenceId', updateSentence);
+SentencesRouter.put('/', updateSentence);
 //path = /sentences/<sentenceId>
-SentencesRouter.delete('/:sentenceId', deleteSentence);
+SentencesRouter.delete('/', deleteSentence);
 
 
 module.exports = SentencesRouter;
