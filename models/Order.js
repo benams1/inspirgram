@@ -10,6 +10,12 @@ const order = {
         textColor: { type: String, default: 'black' },
         backgroundColor: { type: String, default: 'white' },
         fontFamily: { type: String, default: '"Comic Sans MS", cursive, sans-serif' },
+        fontSize: { type: String, default: "40 px"},
+        fontWeight: { type:String, default: "normal"},
+        fontStyle: { type:String, default: "normal"},
+        textDecoration: {type:String, default: "none"},
+        textAlign: { type:String , default:"center"},
+        alignItems: {type: String, default:"center"},
     },
     isActive: {type: Boolean , default: true},
 };
