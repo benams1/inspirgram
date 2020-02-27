@@ -3,7 +3,7 @@ const responses = require('../config/responses').sentencesResponses;
 const {isset} = require('../utilities/generalHelpers');
 
 generalGet = (req, res, searchTerm, then_func) => {
-    Sentence.find(searchTerm)
+    Sentence.find(searchTerm).sort({"sentenceId":1})
         .then(then_func)
         .catch(
             err => {
