@@ -49,8 +49,8 @@ payPalPay = (req, res) =>{
             "payment_method": "paypal"
         },
         "redirect_urls": {
-            "return_url": `${APP_URL}/paypal/success`,
-            "cancel_url": `${APP_URL}/paypal/cancel`,
+            "return_url": `https://inspirgram-5edc9.firebaseapp.com/`,
+            "cancel_url": `https://inspirgram-5edc9.firebaseapp.com/`,
         },
         "transactions": [{
             "item_list": {
